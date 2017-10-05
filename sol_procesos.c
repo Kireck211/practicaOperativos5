@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/wait.h>
+#include "sem.c"
 
 #define atomic_xchg(A,B) __asm__ __volatile__( \
 																		"lock xchg %1,%0 ;\n"	\
@@ -48,6 +50,8 @@ int main()
 	int args[3];
 	int i;
 	void *thread_result;
+
+	print_text();
 
 	// Solicitar memoria compartida
 	shmid=shmget(0x1234,sizeof(g),0666|IPC_CREAT);
