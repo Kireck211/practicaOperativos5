@@ -7,9 +7,9 @@ typedef struct semaphore
 	queue *blocked;
 }sem;
 
-void waitsem(sem *s);
-void signalsem(sem *s);
-void initsem(sem *s, int i);
+void waitsem(sem*);
+void signalsem(sem*);
+void initsem(sem, int);
 
 
 

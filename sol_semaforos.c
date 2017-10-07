@@ -20,8 +20,9 @@ void proceso(int i)
 
 	for(k=0;k<CICLOS;k++)
 	{
-		
-		waitsem(s);		
+		//printf("s: %p\n", s);
+		//printf("count (pointer): %p\n", s->count);
+		waitsem(s);
 		printf("Entra %s",pais[i]);
 		fflush(stdout);
 		sleep(rand()%3);
@@ -43,9 +44,13 @@ int main()
 	int args[3];
 	int i;
 	void *thread_result;
+	sem semaphore;
+	s = &semaphore;
+	*(s->count) = 1;
 
-
-	initsem(s, 1);
+	printf("%p\n", s->count);
+	initsem(semaphore, 1);
+	printf("%p\n", s->count);
 	srand(getpid());
 
 	for(i=0;i<3;i++)
@@ -58,6 +63,7 @@ int main()
 
 	for(i=0;i<3;i++)
 		pid = wait(&status);
+	printf("%d\n", status<<8);
 	
 	// Eliminar la memoria compartida
 	shmdt(s);
