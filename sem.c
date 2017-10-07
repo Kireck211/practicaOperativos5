@@ -5,11 +5,10 @@
 
 extern int errno;
 
-void initsem(sem initialized_s, int i)
+void initsem(sem *s, int i)
 {
 	int sem_id, count_id, queue_id;
 	int errnum;
-	sem * s;
 
 	//Inicialización de memoria para struct sem
 	sem_id= shmget(0x1234, sizeof(sem), 0666|IPC_CREAT);		//Obtiene el ID de la memoria
@@ -23,21 +22,6 @@ void initsem(sem initialized_s, int i)
 	}
 	s = (sem*)shmat(sem_id, NULL, 0);						//Obtiene el apuntador de la memoria
 	if(s == NULL)
-	{
-		printf("Error en shmat\n");
-		exit(2);
-	}
-	*s = initialized_s;
-
-	//Inicialización de memoria para sem.count
-	count_id = shmget(0x1235, sizeof(int), 0666|IPC_CREAT);
-	if(count_id == -1)
-	{
-		printf("Error en shmget\n");
-		exit(1);
-	}
-	s->count = (int*)shmat(count_id, NULL, 0);
-	if(s->count == NULL)
 	{
 		printf("Error en shmat\n");
 		exit(2);
@@ -57,19 +41,18 @@ void initsem(sem initialized_s, int i)
 		exit(2);
 	}
 
-	*(s->count) = i;
+	s->count = i;
 	initqueue(s->blocked);
-	printf("count: %p\n", s->count);
+	printf("sem.c, count: %d\n", s->count);
 }
 
 void waitsem(sem *s)
 {	
 	int pid = getpid();
-	//printf("Aqui todavía llea int pid = getpid() (waitsem)\n");
+
 	s->count--;
-	//printf("Aqui si llega s->count--; (waitsem)\n");
-	//printf("El proceso es: %d y count es: %d\n", pid, *(s->count));
-	if(*(s->count) < 0)
+
+	if(s->count < 0)
 	{
 		enqueue(s->blocked, pid);
 		kill(pid, SIGSTOP);
@@ -82,8 +65,8 @@ void signalsem(sem *s)
 {
 	int pid;
 
-	*(s->count)++;
-	if(*(s->count) <= 0)
+	s->count++;
+	if(s->count <= 0)
 	{
 		pid = dequeue(s->blocked);
 		kill(pid, SIGCONT);

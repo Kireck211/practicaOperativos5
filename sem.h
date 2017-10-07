@@ -3,13 +3,13 @@
 
 typedef struct semaphore
 {
-	int *count;
+	int count;
 	queue *blocked;
 }sem;
 
 void waitsem(sem*);
 void signalsem(sem*);
-void initsem(sem, int);
+void initsem(sem*, int);
 
 
 
