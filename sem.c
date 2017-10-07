@@ -7,7 +7,7 @@ void initsem(sem *s, int i)
 	int sem_id, count_id, queue_id;
 
 	//Inicialización de memoria para struct sem
-	sem_id= shmget(0x1234, sizeof(s), 0666|IPC_CREAT);		//Obtiene el ID de la memoria
+	sem_id= shmget(0x1234, sizeof(sem), 0666|IPC_CREAT);		//Obtiene el ID de la memoria
 	if(sem_id == -1)
 	{
 		printf("Error en shmget\n");
@@ -27,7 +27,7 @@ void initsem(sem *s, int i)
 		printf("Error en shmget\n");
 		exit(1);
 	}
-	s->count = shmat(count_id, NULL, 0);
+	s->count = (int*)shmat(count_id, NULL, 0);
 	if(s->count == NULL)
 	{
 		printf("Error en shmat\n");
@@ -41,7 +41,7 @@ void initsem(sem *s, int i)
 		printf("Error en shmget\n");
 		exit(1);
 	}
-	s->blocked = shmat(count_id, NULL, 0);
+	s->blocked = (queue*)shmat(queue_id, NULL, 0);
 	if(s->blocked == NULL)
 	{
 		printf("Error en shmat\n");
