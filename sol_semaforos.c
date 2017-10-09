@@ -6,12 +6,41 @@
 #include <sys/wait.h>
 #include "sem.c"
 
-
 #define CICLOS 10
 
-char *pais[3]={"Peru","Bolvia","Colombia"};
+void proceso(int);
+void initsem(sem **, int);
 
+char *pais[3]={"Peru","Bolvia","Colombia"};
 sem *s;
+
+int main()
+{
+	int pid;
+	int status;
+	int shmid;
+	int args[3];
+	int i;
+	void *thread_result;
+
+
+	initsem(&s,1);
+	srand(getpid());
+
+	for(i=0;i<3;i++)
+	{
+		// Crea un nuevo proceso hijo que ejecuta la función proceso()
+		pid=fork();
+		if(pid==0)
+			proceso(i);
+	}
+
+	for(i=0;i<3;i++)
+		pid = wait(&status);
+	
+	// Eliminar la memoria compartida
+	shmdt(s);
+}
 
 void proceso(int i)
 {
@@ -34,14 +63,8 @@ void proceso(int i)
 	exit(0); // Termina el proceso
 }
 
-int main()
+void initsem(sem ** s, int n)
 {
-	int pid;
-	int status;
-	int shmid;
-	int args[3];
-	int i;
-	void *thread_result;
 	int sem_id, count_id, queue_id;
 	int errnum;
 
@@ -55,8 +78,8 @@ int main()
 		printf("Error en shmget\n");
 		exit(1);
 	}
-	s = (sem*)shmat(sem_id, NULL, 0);						//Obtiene el apuntador de la memoria
-	if(s == NULL)
+	*s = (sem*)shmat(sem_id, NULL, 0);						//Obtiene el apuntador de la memoria
+	if(*s == NULL)
 	{
 		printf("Error en shmat\n");
 		exit(2);
@@ -69,30 +92,13 @@ int main()
 		printf("Error en shmget\n");
 		exit(1);
 	}
-	s->blocked = (queue*)shmat(queue_id, NULL, 0);
-	if(s->blocked == NULL)
+	(*s)->blocked = (queue*)shmat(queue_id, NULL, 0);
+	if((*s)->blocked == NULL)
 	{
 		printf("Error en shmat\n");
 		exit(2);
 	}
 
-	s->count = 1;
-	initqueue(s->blocked);
-
-	srand(getpid());
-
-	for(i=0;i<3;i++)
-	{
-		// Crea un nuevo proceso hijo que ejecuta la función proceso()
-		pid=fork();
-		if(pid==0)
-			proceso(i);
-	}
-
-	for(i=0;i<3;i++)
-		pid = wait(&status);
-	printf("%d\n", status<<8);
-	
-	// Eliminar la memoria compartida
-	shmdt(s);
+	(*s)->count = n;
+	initqueue((*s)->blocked);
 }

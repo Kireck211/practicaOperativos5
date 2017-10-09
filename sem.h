@@ -9,7 +9,7 @@ typedef struct semaphore
 
 void waitsem(sem*);
 void signalsem(sem*);
-void initsem(sem*, int);
+//void initsem(sem*, int);
 
 
 

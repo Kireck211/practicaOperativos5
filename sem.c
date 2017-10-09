@@ -5,7 +5,7 @@
 
 extern int errno;
 
-void initsem(sem *s, int i)
+/*void initsem(sem *s, int i)
 {
 	int sem_id, count_id, queue_id;
 	int errnum;
@@ -44,7 +44,7 @@ void initsem(sem *s, int i)
 	s->count = i;
 	initqueue(s->blocked);
 	printf("sem.c, count: %d\n", s->count);
-}
+}*/
 
 void waitsem(sem *s)
 {	
