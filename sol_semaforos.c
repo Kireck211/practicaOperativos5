@@ -9,7 +9,6 @@
 #define CICLOS 10
 
 void proceso(int);
-//void initsem(sem **, int);
 
 char *pais[3]={"Peru","Bolvia","Colombia"};
 sem *s;
@@ -62,43 +61,3 @@ void proceso(int i)
 	}
 	exit(0); // Termina el proceso
 }
-
-/*void initsem(sem ** s, int n)
-{
-	int sem_id, count_id, queue_id;
-	int errnum;
-
-	//Inicialización de memoria para struct sem
-	sem_id= shmget(0x1234, sizeof(sem), 0666|IPC_CREAT);		//Obtiene el ID de la memoria
-	if(sem_id == -1)
-	{
-		errnum = errno;
-		fprintf(stderr, "Value of errno: %d\n", errno);
-		perror("Error printed by perror");
-		printf("Error en shmget\n");
-		exit(1);
-	}
-	*s = (sem*)shmat(sem_id, NULL, 0);						//Obtiene el apuntador de la memoria
-	if(*s == NULL)
-	{
-		printf("Error en shmat\n");
-		exit(2);
-	}
-
-	//Inicialización de memoria para sem.queue
-	queue_id = shmget(0x1236, sizeof(queue), 0666|IPC_CREAT);
-	if(queue_id == -1)
-	{
-		printf("Error en shmget\n");
-		exit(1);
-	}
-	(*s)->blocked = (queue*)shmat(queue_id, NULL, 0);
-	if((*s)->blocked == NULL)
-	{
-		printf("Error en shmat\n");
-		exit(2);
-	}
-
-	(*s)->count = n;
-	initqueue((*s)->blocked);
-}*/
