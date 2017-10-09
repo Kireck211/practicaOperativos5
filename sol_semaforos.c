@@ -9,7 +9,7 @@
 #define CICLOS 10
 
 void proceso(int);
-void initsem(sem **, int);
+//void initsem(sem **, int);
 
 char *pais[3]={"Peru","Bolvia","Colombia"};
 sem *s;
@@ -63,7 +63,7 @@ void proceso(int i)
 	exit(0); // Termina el proceso
 }
 
-void initsem(sem ** s, int n)
+/*void initsem(sem ** s, int n)
 {
 	int sem_id, count_id, queue_id;
 	int errnum;
@@ -101,4 +101,4 @@ void initsem(sem ** s, int n)
 
 	(*s)->count = n;
 	initqueue((*s)->blocked);
-}
+}*/

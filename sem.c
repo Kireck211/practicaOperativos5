@@ -5,7 +5,7 @@
 
 extern int errno;
 
-/*void initsem(sem *s, int i)
+void initsem(sem ** s, int n)
 {
 	int sem_id, count_id, queue_id;
 	int errnum;
@@ -20,8 +20,8 @@ extern int errno;
 		printf("Error en shmget\n");
 		exit(1);
 	}
-	s = (sem*)shmat(sem_id, NULL, 0);						//Obtiene el apuntador de la memoria
-	if(s == NULL)
+	*s = (sem*)shmat(sem_id, NULL, 0);						//Obtiene el apuntador de la memoria
+	if(*s == NULL)
 	{
 		printf("Error en shmat\n");
 		exit(2);
@@ -34,17 +34,16 @@ extern int errno;
 		printf("Error en shmget\n");
 		exit(1);
 	}
-	s->blocked = (queue*)shmat(queue_id, NULL, 0);
-	if(s->blocked == NULL)
+	(*s)->blocked = (queue*)shmat(queue_id, NULL, 0);
+	if((*s)->blocked == NULL)
 	{
 		printf("Error en shmat\n");
 		exit(2);
 	}
 
-	s->count = i;
-	initqueue(s->blocked);
-	printf("sem.c, count: %d\n", s->count);
-}*/
+	(*s)->count = n;
+	initqueue((*s)->blocked);
+}
 
 void waitsem(sem *s)
 {	
